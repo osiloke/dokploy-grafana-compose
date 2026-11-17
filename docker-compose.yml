@@ -117,6 +117,7 @@ services:
       - /etc/alloy/config.alloy
     volumes:
       - alloy-data:/var/lib/alloy/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     depends_on:
       mimir:
         condition: service_started
