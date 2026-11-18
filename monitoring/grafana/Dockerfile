@@ -1,2 +1,2 @@
-FROM grafana/grafana:11.6.0
+FROM grafana/grafana:13.2.6
 COPY datasources.yml /etc/grafana/provisioning/datasources/datasources.yml
