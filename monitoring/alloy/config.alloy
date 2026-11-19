@@ -42,6 +42,48 @@ otelcol.receiver.otlp "ingest" {
 }
 
 // =============================================================================
+// Health probes: scrape /metrics endpoints of each service over the network.
+// This provides up/down status without requiring curl/wget inside distroless
+// container images. The `up` metric (0 = down, 1 = up) is emitted automatically
+// by prometheus.scrape and can be used for alerting.
+// =============================================================================
+
+prometheus.scrape "grafana_health" {
+  targets = [{ __address__ = "grafana:3000" }]
+  forward_to = [prometheus.remote_write.mimir.receiver]
+  scrape_interval = "30s"
+  job_name = "grafana"
+}
+
+prometheus.scrape "loki_health" {
+  targets = [{ __address__ = "loki:3100" }]
+  forward_to = [prometheus.remote_write.mimir.receiver]
+  scrape_interval = "30s"
+  job_name = "loki"
+}
+
+prometheus.scrape "tempo_health" {
+  targets = [{ __address__ = "tempo:3200" }]
+  forward_to = [prometheus.remote_write.mimir.receiver]
+  scrape_interval = "30s"
+  job_name = "tempo"
+}
+
+prometheus.scrape "mimir_health" {
+  targets = [{ __address__ = "mimir:9009" }]
+  forward_to = [prometheus.remote_write.mimir.receiver]
+  scrape_interval = "30s"
+  job_name = "mimir"
+}
+
+prometheus.scrape "alloy_health" {
+  targets = [{ __address__ = "alloy:12345" }]
+  forward_to = [prometheus.remote_write.mimir.receiver]
+  scrape_interval = "30s"
+  job_name = "alloy"
+}
+
+// =============================================================================
 // Exporters (internal fan-out to backends)
 // =============================================================================
 

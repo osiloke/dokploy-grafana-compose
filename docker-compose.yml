@@ -6,6 +6,7 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=password
       - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_ALERTING_ENABLED=true
     volumes:
       - grafana-data:/var/lib/grafana
     depends_on:

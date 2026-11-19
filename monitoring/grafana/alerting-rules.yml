@@ -1,0 +1,72 @@
+# Grafana alerting rules for the Dokploy monitoring stack.
+#
+# These rules fire when the `up` metric (scraped by Alloy from each service's
+# /metrics endpoint over the Docker network) stays at 0 for longer than the
+# `for` duration. No curl/wget is required inside any container.
+#
+# To use: import this file in Grafana (Alerting -> Rules -> Import) or provision
+# it through Grafana's alerting rule provisioning. Then configure a contact
+# point (Slack, email, webhook, etc.) under Alerting -> Contact points.
+
+groups:
+  - name: monitoring_stack_health
+    rules:
+      - alert: GrafanaDown
+        expr: up{job="grafana"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: grafana
+        annotations:
+          summary: "Grafana is down"
+          description: "Grafana (job=grafana) has been unreachable on grafana:3000 for more than 2 minutes."
+
+      - alert: LokiDown
+        expr: up{job="loki"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: loki
+        annotations:
+          summary: "Loki is down"
+          description: "Loki (job=loki) has been unreachable on loki:3100 for more than 2 minutes."
+
+      - alert: TempoDown
+        expr: up{job="tempo"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: tempo
+        annotations:
+          summary: "Tempo is down"
+          description: "Tempo (job=tempo) has been unreachable on tempo:3200 for more than 2 minutes."
+
+      - alert: MimirDown
+        expr: up{job="mimir"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: mimir
+        annotations:
+          summary: "Mimir is down"
+          description: "Mimir (job=mimir) has been unreachable on mimir:9009 for more than 2 minutes."
+
+      - alert: AlloyDown
+        expr: up{job="alloy"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: alloy
+        annotations:
+          summary: "Alloy is down"
+          description: "Alloy (job=alloy) has been unreachable on alloy:12345 for more than 2 minutes."
+
+      - alert: NodeExporterDown
+        expr: up{job="node-exporter"} == 0
+        for: 2m
+        labels:
+          severity: warning
+          service: node-exporter
+        annotations:
+          summary: "node-exporter is down"
+          description: "node-exporter (job=node-exporter) has been unreachable on node-exporter:9100 for more than 2 minutes."
